@@ -60,16 +60,18 @@
 #define AST_DT_BOOL 46 // DATA TYPE BOOL
 #define AST_DT_VOID 47 // DATA TYPE VOID
 
-#define AST_NODE_DIGITAL_READ_CALL  48 
-#define AST_NODE_DIGITAL_WRITE_CALL 49
-#define AST_NODE_DELAY_CALL         50
-#define AST_NODE_PWM_CALL           51
-#define AST_NODE_START_COUNTER_CALL 52
-#define AST_NODE_STOP_COUNTER_CALL  53
-#define AST_NODE_READ_COUNTER_CALL  54
-#define AST_NODE_INIT_RPMSG_CALL    55
-#define AST_NODE_RECV_RPMSG_CALL    56
-#define AST_NODE_SEND_RPMSG_CALL    57
+#define AST_NODE_DIGITAL_READ_CALL          48 
+#define AST_NODE_DIGITAL_WRITE_CALL         49
+#define AST_NODE_DELAY_CALL                 50
+#define AST_NODE_PWM_CALL                   51
+#define AST_NODE_START_COUNTER_CALL         52
+#define AST_NODE_STOP_COUNTER_CALL          53
+#define AST_NODE_READ_COUNTER_CALL          54
+#define AST_NODE_INIT_RPMSG_CALL            55
+#define AST_NODE_RECV_RPMSG_CALL            56
+#define AST_NODE_SEND_RPMSG_CALL            57
+#define AST_NODE_PRINT_STRING_FUNCTION_CALL 58
+#define AST_NODE_PRINT_ID_FUNCTION_CALL     59
 
 typedef vec_t(struct ast_node*) ast_nodes;
 typedef vec_t(struct ast_node_statements*) ast_nodes_statements;
@@ -95,6 +97,8 @@ struct ast_node_param;
 struct ast_node_function_call;
 struct ast_node_arguments;
 struct ast_node_utility_function_call;
+struct ast_node_print_string_function_call;
+struct ast_node_print_id_function_call;
 
 typedef struct ast_node ast_node;
 typedef struct ast_node_statements ast_node_statements;
@@ -114,6 +118,8 @@ typedef struct ast_node_param ast_node_param;
 typedef struct ast_node_function_call ast_node_function_call;
 typedef struct ast_node_arguments ast_node_arguments;
 typedef struct ast_node_utility_function_call ast_node_utility_function_call;
+typedef struct ast_node_print_string_function_call ast_node_print_string_function_call;
+typedef struct ast_node_print_id_function_call ast_node_print_id_function_call;
 
 struct ast_node 
 {
@@ -121,7 +127,7 @@ struct ast_node
     ast_nodes child_nodes;
 };
 
- struct ast_node_statements 
+struct ast_node_statements 
 {
     int node_type;
 
@@ -137,17 +143,19 @@ struct ast_node
         ast_node_expression *return_statement;
         ast_node_function_call *function_call;
         ast_node_utility_function_call *utility_function_call;
+        ast_node_print_string_function_call *print_string_function_call;
+        ast_node_print_id_function_call *print_id_function_call;
     }child_nodes;
 };
 
- struct ast_node_compound_statement
+struct ast_node_compound_statement
 {
     int node_type;
     
     ast_nodes_statements child_nodes;
 };
 
- struct ast_node_declaration
+struct ast_node_declaration
 {
     int node_type;
 
@@ -155,7 +163,7 @@ struct ast_node
     ast_node_expression *expression;
 };
 
- struct ast_node_assignment
+struct ast_node_assignment
 {
     int node_type;
 
@@ -163,7 +171,7 @@ struct ast_node
     ast_node_expression *expression;
 };
 
- struct ast_node_expression
+struct ast_node_expression
 {
     int node_type;
     int opt;
@@ -173,7 +181,7 @@ struct ast_node
     ast_node *right;
 };
 
- struct ast_node_constant
+struct ast_node_constant
 {
     int node_type;
     int data_type;
@@ -181,7 +189,7 @@ struct ast_node
     int value;
 };
 
- struct ast_node_variable
+struct ast_node_variable
 {
     int node_type;
     int data_type;
@@ -189,7 +197,7 @@ struct ast_node
     sym_ptr symbol_entry;
 };
 
- struct ast_node_conditional_if
+struct ast_node_conditional_if
 {
     int node_type;
 
@@ -199,14 +207,14 @@ struct ast_node
     ast_node_compound_statement *else_part;
 };
 
- struct ast_node_conditional_else_if
+struct ast_node_conditional_else_if
 {
     int node_type;
 
     ast_nodes_else_if else_if;
 };
 
- struct ast_node_loop_for
+struct ast_node_loop_for
 {
     int node_type;
 
@@ -216,7 +224,7 @@ struct ast_node
     ast_node_compound_statement *body;
 };
 
- struct ast_node_loop_while
+struct ast_node_loop_while
 {
     int node_type;
 
@@ -224,12 +232,12 @@ struct ast_node
     ast_node_compound_statement *body;
 };
 
- struct ast_node_loop_control
+struct ast_node_loop_control
 {
     int node_type;
 };
 
- struct ast_node_function_def
+struct ast_node_function_def
 {
     int node_type;
 
@@ -239,14 +247,14 @@ struct ast_node
     ast_node_expression *return_statment;
 };
 
- struct ast_node_param 
+struct ast_node_param 
 {
     int node_type;
 
     ast_nodes_variables variable;
 };
 
- struct ast_node_function_call
+struct ast_node_function_call
 {
     int node_type;
 
@@ -271,6 +279,20 @@ struct ast_node_utility_function_call
     ast_node_expression *frequency;
     ast_node_expression *duty_cycle;
     ast_node_expression *rpmsg_data;
+};
+
+struct ast_node_print_string_function_call
+{
+    int node_type;
+    int add_newline;
+    char *string;
+};
+
+struct ast_node_print_id_function_call
+{
+    int node_type;
+    int add_newline;
+    sym_ptr symbol_handle;
 };
 
 ast_node *create_translation_unit();
@@ -305,6 +327,8 @@ ast_node_utility_function_call *create_read_counter_call_node();
 ast_node_utility_function_call *create_init_rpmsg_call_node();
 ast_node_utility_function_call *create_recv_rpmsg_call_node();
 ast_node_utility_function_call *create_send_rpmsg_call_node(ast_node_expression *rpmsg_data);
+ast_node_print_string_function_call *create_print_string_function_call_node(char *string, int add_newline);
+ast_node_print_id_function_call *create_print_id_function_call_node(sym_ptr symbol_handle, int add_newline);
 
 void ast_node_dump(ast_node* ast);
 void ast_node_type(int node_type);
