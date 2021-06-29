@@ -29,7 +29,7 @@ for file in os.listdir("tests/run_anywhere"):
         transpile_output = subprocess.run(f"bin/simppru -c -t tests/run_anywhere/{file}", shell=True, capture_output=True)
 
         if transpile_output.returncode != 0:
-            print(f"TEST FAILED: {file}")
+            print(f"**** ****TEST FAILED**** ****: {file}")
             print("stdout:\n", transpile_output.stdout.decode("utf-8"), sep='')
             print("stderr:\n", transpile_output.stderr.decode("utf-8"), sep='')
             continue
@@ -37,7 +37,7 @@ for file in os.listdir("tests/run_anywhere"):
         compile_output = subprocess.run(f"gcc -o tests/run_anywhere/{file}.out /tmp/temp.c", shell=True, capture_output=True)
 
         if compile_output.returncode != 0:
-            print(f"TEST FAILED: {file}")
+            print(f"**** ****TEST FAILED**** ****: {file}")
             print("stdout:\n", compile_output.stdout.decode("utf-8"), sep='')
             print("stderr:\n", compile_output.stderr.decode("utf-8"), sep='')
             continue
@@ -45,7 +45,7 @@ for file in os.listdir("tests/run_anywhere"):
         run_output = subprocess.run(f"tests/run_anywhere/{file}.out", shell=True, capture_output=True)
 
         if run_output.returncode != 0:
-            print(f"TEST FAILED: {file}")
+            print(f"**** ****TEST FAILED**** ****: {file}")
             print("stdout:\n", run_output.stdout.decode("utf-8"), sep='')
             print("stderr:\n", run_output.stderr.decode("utf-8"), sep='')
             continue
@@ -56,8 +56,6 @@ for file in os.listdir("tests/run_anywhere"):
             expected_output = out.read()
 
         if output != expected_output:
-            print(f"TEST FAILED: {file}")
-            print("Output:\n", output.decode("utf-8"), sep='')
-            print("Expected Output:\n", expected_output.decode("utf-8"), sep='')
+            print(f"**** ****TEST FAILED**** ****: {file}")
         else:
             print(f"Test {file} passed")
