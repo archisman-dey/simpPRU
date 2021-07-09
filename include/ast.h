@@ -18,6 +18,7 @@
 #define AST_NODE_RELATIONAL_EXP      10
 #define AST_NODE_LOGICAL_EXP         11
 #define AST_NODE_CONSTANT            12
+#define AST_NODE_CONSTANT_CHAR       1000
 #define AST_NODE_VARIABLE            13
 #define AST_NODE_CONDITIONAL_IF      14
 #define AST_NODE_CONDITIONAL_ELSE_IF 15
