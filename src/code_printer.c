@@ -466,7 +466,14 @@ void ast_print_id_function_call_printer(ast_node_print_id_function_call *pfc, FI
 {
     if (pfc != NULL && handle != NULL)
     {
-        fprintf(handle, "printf(\"%%d\", %s)", pfc->symbol_handle->identifier);
+        if (pfc->symbol_handle->data_type == DT_INTEGER || pfc->symbol_handle->data_type == DT_BOOLEAN)
+        {
+            fprintf(handle, "printf(\"%%d\", %s)", pfc->symbol_handle->identifier);
+        }
+        else if (pfc->symbol_handle->data_type == DT_CHAR_)
+        {
+            fprintf(handle, "printf(\"%%c\", %s)", pfc->symbol_handle->identifier);
+        }
         
         if (pfc->add_newline)
         {
